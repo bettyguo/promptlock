@@ -1,0 +1,5 @@
+{"ticket_summary": "Production database is down for all enterprise customers; API returning 500.", "customer_tier": "enterprise", "urgency": 5, "expected": {"page": true}}
+{"ticket_summary": "User asks how to change their email avatar.", "customer_tier": "free", "urgency": 1, "expected": {"page": false}}
+{"ticket_summary": "Pro customer reports intermittent timeouts on write endpoints; first occurrence today.", "customer_tier": "pro", "urgency": 4, "expected": {"page": true}}
+{"ticket_summary": "Team-tier user requests a new dashboard widget.", "customer_tier": "team", "urgency": 2, "expected": {"page": false}}
+{"ticket_summary": "Enterprise customer can't log in; SSO appears broken; status page shows scheduled maintenance.", "customer_tier": "enterprise", "urgency": 4, "expected": {"page": false}}

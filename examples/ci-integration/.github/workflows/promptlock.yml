@@ -1,0 +1,59 @@
+# Sample promptlock CI integration. Validates, checks the lockfile, runs evals
+# on changed prompts, and posts/updates a PR comment.
+#
+# Set ANTHROPIC_API_KEY (or whichever provider key your prompts use) as a repo
+# secret.
+
+name: promptlock
+
+on:
+  pull_request:
+    paths:
+      - 'prompts/**'
+      - 'tests/datasets/**'
+      - 'promptlock.lock'
+      - '.promptlock/**'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write   # for the eval-result comment
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # eval --changed needs the merge base
+
+      - name: install promptlock
+        run: |
+          curl -fsSL https://github.com/promptlock/promptlock/releases/latest/download/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - uses: actions/cache@v4
+        with:
+          path: .promptlock/cache
+          key: promptlock-cache-${{ hashFiles('prompts/**', 'tests/datasets/**') }}
+          restore-keys: |
+            promptlock-cache-
+
+      - name: validate
+        run: promptlock validate
+
+      - name: check lockfile freshness
+        run: promptlock check
+
+      - name: run evals on changed prompts
+        if: github.event_name == 'pull_request'
+        run: promptlock eval --ci > eval.json
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: comment on PR
+        if: always() && github.event_name == 'pull_request' && hashFiles('eval.json') != ''
+        run: promptlock comment --github --from eval.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

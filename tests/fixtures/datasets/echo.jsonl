@@ -1,0 +1,3 @@
+{"phrase": "alpha", "expected": "alpha"}
+{"phrase": "bravo charlie", "expected": "bravo charlie"}
+{"phrase": "delta", "expected": "delta"}

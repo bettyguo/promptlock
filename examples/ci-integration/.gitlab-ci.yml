@@ -1,0 +1,31 @@
+# Sample GitLab CI integration for promptlock.
+#
+# Triggers on merge requests that touch prompts/, datasets/, or the lockfile.
+# Validates, checks lockfile, runs evals, prints results in the job log.
+#
+# Set ANTHROPIC_API_KEY (or another provider key) as a CI/CD variable.
+
+promptlock:
+  image: alpine:3.20
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - prompts/**/*
+        - tests/datasets/**/*
+        - promptlock.lock
+        - .promptlock/**/*
+  before_script:
+    - apk add --no-cache curl ca-certificates git
+    - curl -fsSL https://github.com/promptlock/promptlock/releases/latest/download/install.sh | sh
+    - export PATH="$HOME/.local/bin:$PATH"
+  script:
+    - promptlock validate
+    - promptlock check
+    - promptlock eval --ci > eval.json
+    - promptlock comment --markdown --from eval.json
+  variables:
+    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY
+  cache:
+    key: promptlock-cache
+    paths:
+      - .promptlock/cache/

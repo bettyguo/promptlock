@@ -1,0 +1,8 @@
+# Local promptlock state — never committed
+.promptlock/cache/
+.promptlock/runs/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,8 @@
+{"ticket_text": "I was double-charged for my June subscription and need a refund.", "expected": {"category": "billing", "urgency": 4}}
+{"ticket_text": "Can you add a teammate to my workspace?", "expected": {"category": "feature_request", "urgency": 1}}
+{"ticket_text": "Production is hard down for the entire team — paging.", "expected": {"category": "technical", "urgency": 5}}
+{"ticket_text": "When are your business hours?", "expected": {"category": "other", "urgency": 1}}
+{"ticket_text": "Login broken on Safari since yesterday — repro every time.", "expected": {"category": "technical", "urgency": 4}}
+{"ticket_text": "Could we add a dark mode toggle in the dashboard please?", "expected": {"category": "feature_request", "urgency": 1}}
+{"ticket_text": "Why was my account suspended? I need it restored urgently for a demo today.", "expected": {"category": "other", "urgency": 5}}
+{"ticket_text": "Invoice #4521 has the wrong tax line — should be 8.75%, not 10%.", "expected": {"category": "billing", "urgency": 3}}

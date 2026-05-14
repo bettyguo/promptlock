@@ -1,0 +1,4 @@
+{"ticket_text": "I was double-charged on my June invoice.", "customer_tier": "pro", "expected": {"category": "billing", "urgency": 4}}
+{"ticket_text": "How do I add a teammate?", "customer_tier": "free", "expected": {"category": "feature_request", "urgency": 1}}
+{"ticket_text": "Site is completely down for our whole team — paging now.", "customer_tier": "enterprise", "expected": {"category": "technical", "urgency": 5}}
+{"ticket_text": "Can you tell me when business hours are?", "customer_tier": "free", "expected": {"category": "other", "urgency": 1}}

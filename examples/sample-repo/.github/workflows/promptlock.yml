@@ -1,0 +1,58 @@
+name: promptlock
+on:
+  pull_request:
+    paths:
+      - 'prompts/**'
+      - 'tests/datasets/**'
+      - 'promptlock.lock'
+      - '.promptlock/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Install promptlock
+        run: |
+          curl -sSfL https://github.com/promptlock/promptlock/releases/latest/download/promptlock_linux_amd64.tar.gz \
+            | tar -xz -C /usr/local/bin promptlock
+
+      - name: Cache provider responses
+        uses: actions/cache@v4
+        with:
+          path: .promptlock/cache
+          key: promptlock-${{ hashFiles('prompts/**', 'tests/datasets/**') }}
+          restore-keys: |
+            promptlock-
+
+      - name: Validate
+        run: promptlock validate
+
+      - name: Check lockfile freshness
+        run: promptlock check
+
+      - name: Eval (skip API-key prompts on PRs from forks)
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          promptlock eval --ci > eval.json
+          cat eval.json
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Eval (mock-only fallback for fork PRs)
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          promptlock eval --prompt onboarding/welcome --provider mock --ci > eval.json
+          cat eval.json
+
+      - name: Comment on PR
+        if: always() && hashFiles('eval.json') != ''
+        run: cat eval.json | promptlock comment --github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

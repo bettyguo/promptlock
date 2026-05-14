@@ -1,0 +1,50 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: promptlock
+    main: ./cmd/promptlock
+    binary: promptlock
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.Version={{.Version}}
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - id: promptlock
+    name_template: 'promptlock_{{.Version}}_{{.Os}}_{{.Arch}}'
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: 'promptlock_{{.Version}}_checksums.txt'
+
+snapshot:
+  version_template: '{{ incpatch .Version }}-next'
+
+release:
+  draft: true   # let a human flip to published after review
+  github:
+    owner: promptlock
+    name: promptlock
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - 'Merge pull request'
