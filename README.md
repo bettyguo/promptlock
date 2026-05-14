@@ -36,7 +36,7 @@ already use for code.
 ## Quickstart
 
 ```bash
-git clone https://github.com/promptlock/promptlock && cd promptlock
+git clone https://github.com/bettyguo/promptlock && cd promptlock
 go build -o promptlock ./cmd/promptlock
 
 # Then, in a repo with prompts/*.prompt.md files somewhere:
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - run: |
-          curl -fsSL https://github.com/promptlock/promptlock/releases/latest/download/install.sh | sh
+          curl -fsSL https://github.com/bettyguo/promptlock/releases/latest/download/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - run: promptlock validate && promptlock check
       - run: promptlock eval --ci > eval.json
